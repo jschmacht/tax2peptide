@@ -92,15 +92,11 @@ def main():
     parser.add_argument('-i', '--input', dest='input', default=None, help='TaxID input file: tabular file containing a column of NCBI'
                                                                           ' taxon IDs. Columns tab separated.')
     parser.add_argument('-c', '--column', dest='column', type=positive_integer, default=0, help='The column (zero-based) in the tabular '
-                                                                                  'file that contains Taxon IDs. Default = 0')
+                                                                                  'file that contains Taxon IDs. Default = 0.')
     parser.add_argument('-t', '--taxon', dest='taxon', type=positive_integer, nargs='+', action='append',
                         help='NCBI taxon ID/s for database extraction. Multiple taxonIDs seperated by space.' )
-    parser.add_argument('-l', '--level', dest='level',  choices=[ 'species', 'section', 'genus', 'tribe', 'subfamily', 'family', 'superfamily',
-                                                                 'order', 'superorder', 'class', 'phylum', 'kingdom', 'superkingdom'], default=None,
-                        help='Hierachy-Level up in anchestral tree. Choices: species, section, genus, tribe, '
-                             'subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom')
     parser.add_argument('-d', '--database', dest='database', choices=['ncbi', 'uniprot', 'swissprot', 'trembl'],
-                        default='ncbi', help='Database for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot. '
+                        default='uniprot', help='Database choice for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot. '
                         'No download, if databases with original name are stored in same folder as option --path ')
     parser.add_argument('-p', '--path', dest='path', default=None, help='Path to folder with all needed '
                             'databases: taxdump.tar.gz (for all databases), prot.accession2taxid or prot.accession2taxid.gz and '
@@ -108,18 +104,22 @@ def main():
                             'uniprot_trembl.fasta/uniprot_trembl.fasta.gz or uniprot_sprot.fasta/uniprot_sprot.fasta.gz'
                             ' or uniprot.fasta./uniprot.fasta.gz')
     parser.add_argument('-o', '--out', dest='out', default=None,
-                        help="File name and direction of the final taxon specified peptide database. "
+                        help="File name and direction of the result taxon specified peptide database. "
                              "Default = /taxon_specified_db_DATE/taxon_database.fasta")
     parser.add_argument('-n', '--dbname', dest='dbname', default=None,
                         help="Database name and direction if database is in other folder than --path or have a different name.")
-    parser.add_argument('-w', '--not_with_childs', dest='not_with_childs', action='store_true', default=False,
-                        help='Select peptide database only by given taxon IDs, child-taxons are excluded.')
-    parser.add_argument('-s', '--childs_until_species', dest='childs_until_species', action='store_true', default=False,
-                        help='Select peptide database only until taxonomic level "species", childs from species are excluded.')
+    parser.add_argument('-l', '--level', dest='level',  choices=['species', 'section', 'genus', 'tribe', 'subfamily', 'family', 'superfamily',
+                                                                 'order', 'superorder', 'class', 'phylum', 'kingdom', 'superkingdom'], default=None,
+                        help='Hierarchy level up in anchestral tree. Choices: species, section, genus, tribe, '
+                             'subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom')
+    parser.add_argument('-z', '--no_descendants', dest='no_descendants', action='store_true', default=False,
+                        help='Select peptide database only by given taxon IDs, descendant taxons are excluded.')
+    parser.add_argument('-s', '--species', dest='species', action='store_true', default=False,
+                        help='Select peptide database only until taxonomic level "species", descendents from species are excluded.')
     parser.add_argument('-r', '--non_redundant', dest='non_redundant', action='store_true', default=False,
-                        help='Make the final database non redundant in regard to sequences, header are concatenated')
-    parser.add_argument('-m', '--threads', dest='threads', type=positive_integer, action="store",
-                        help='Number of threads for using multiprocessing.')
+                        help='Make the final database non redundant in regard to sequences, headers are concatenated.')
+    parser.add_argument('-u', '--threads', dest='threads', type=positive_integer, action="store",
+                        help='Number of threads for using multiprocessing. Default = number of cores.')
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
 
     options = parser.parse_args()
@@ -373,10 +373,10 @@ def main():
 
     final_taxIDs = set()
     # find all descendants
-    if not options.not_with_childs:
+    if not options.no_descendants:
         logger.info("Start searching for all child taxon IDs.")
         for taxID in taxIDs:
-            final_taxIDs.update(taxon_graph.find_taxIDs(taxID, options.childs_until_species))
+            final_taxIDs.update(taxon_graph.find_taxIDs(taxID, options.species))
         logger.info("End searching for all child taxon IDs.")
         logger.info('Number of final taxon IDs: %s' % str(len(final_taxIDs)))
     else:
