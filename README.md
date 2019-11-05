@@ -35,29 +35,29 @@ python3 path/to/tax2peptide -options
 ```
 
 ### Options:
--i	--input	TaxID input file: tabular file containing a column of NCBI taxon IDs. Columns tab separated.
+-i	--input   TaxID input file: tabular file containing a column of NCBI taxon IDs. Columns tab separated.
 
--c	--column 	The column (zero-based) in the tabular file that contains Taxon IDs. Default = 0.
+-c	--column   The column (zero-based) in the tabular file that contains Taxon IDs. Default = 0.
 
--t	--taxon	NCBI taxon ID/s for database extraction. Multiple taxonIDs seperated by space.
+-t	--taxon   NCBI taxon ID/s for database extraction. Multiple taxonIDs seperated by space.
 
--d	--database	Database choice for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot.
+-d	--database   Database choice for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot.
 
--p	--path	Path to folder with all needed databases: taxdump.tar.gz (for all databases), prot.accession2taxid or prot.accession2taxid.gz and pdb.accession2taxid.gz (for ncbi databases). Optional: peptide_database named: nr/nr.gz or uniprot_trembl.fasta/uniprot_trembl.fasta.gz or uniprot_sprot.fasta/uniprot_sprot.fasta.gz or uniprot.fasta./uniprot.fasta.gz
+-p	--path   Path to folder with all needed databases: taxdump.tar.gz (for all databases), prot.accession2taxid or prot.accession2taxid.gz and pdb.accession2taxid.gz (for ncbi databases). Optional: peptide_database named: nr/nr.gz or uniprot_trembl.fasta/uniprot_trembl.fasta.gz or uniprot_sprot.fasta/uniprot_sprot.fasta.gz or uniprot.fasta./uniprot.fasta.gz
 
--o	--out	File name and direction of the result taxon specified peptide database. Default = /taxon_specified_db_DATE/taxon_database.fasta
+-o	--out   File name and direction of the result taxon specified peptide database. Default = /taxon_specified_db_DATE/taxon_database.fasta
 
--n	--dbname	Database name and direction. If database is in other folder than --path or have a different name.
+-n	--dbname   Database name and direction. If database is in other folder than --path or have a different name.
 
--l	--level	Hierarchy level up in anchestral tree. Choices: species, section, genus, tribe, subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom
+-l	--level   Hierarchy level up in anchestral tree. Choices: species, section, genus, tribe, subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom
 
--r	--non_redundant	Make the final database non redundant in regard to sequences, headers are concatenated.
+-r	--non_redundant   Make the final database non redundant in regard to sequences, headers are concatenated.
 
--z	--no_descendants	Select peptide database only by given taxon IDs, descendant taxons are excluded.
+-z	--no_descendants   Select peptide database only by given taxon IDs, descendant taxons are excluded.
 
--s	--species	Select peptide database only until taxonomic level "species", descendants from species are excluded.
+-s	--species   Select peptide database only until taxonomic level "species", descendants from species are excluded.
 
--u 	--threads	Number of threads for using multiprocessing. Default = number of cores.
+-u 	--threads   Number of threads for using multiprocessing. Default = number of cores.
 
 ### Dependencies:
 Needed databases for NCBI reference database: 

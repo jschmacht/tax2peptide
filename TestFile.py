@@ -30,7 +30,7 @@ class TestFile:
 
     @staticmethod
     def test_uniprot(path_to_file):
-        if WithtaxID.test_gzipped(path_to_file):
+        if TestFile.test_gzipped(path_to_file):
             try:
                 with gzip.open(path_to_file, "rt") as db:
                     if re.search(' OX=', db.readline()):

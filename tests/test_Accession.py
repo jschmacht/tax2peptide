@@ -16,26 +16,26 @@ class TestAccession(unittest.TestCase):
         pass
 
     def test_read_accessions_gzipped(self):
-        protaccession_path = Path.cwd() / 'testdata' / 'prot.accession2taxid_test.gz'
-        pdbaccession_path = Path.cwd() / 'testdata' / 'pdb.accession2taxid_test.gz'
+        protaccession_path = Path.cwd() / 'data' / 'prot.accession2taxid_test.gz'
+        pdbaccession_path = Path.cwd() / 'data' / 'pdb.accession2taxid_test.gz'
         accession = Accession({21, 42})
         accession.read_accessions(protaccession_path, pdbaccession_path, threads=4)
         self.assertEqual({'NP_3.2', 'sp|A0R8I7|RL16_BACAH', 'NP_8.2'}, accession.accessionIDs)
 
     def test_read_accessions_unzipped(self):
-        protaccession_path = Path.cwd() / 'testdata' / 'prot.accession2taxid_test'
-        pdbaccession_path = Path.cwd() / 'testdata' / 'pdb.accession2taxid_test.gz'
+        protaccession_path = Path.cwd() / 'data' / 'prot.accession2taxid_test'
+        pdbaccession_path = Path.cwd() / 'data' / 'pdb.accession2taxid_test.gz'
         accession = Accession({21, 42})
         accession.read_accessions(protaccession_path, pdbaccession_path, threads=4)
         self.assertEqual({'NP_3.2', 'sp|A0R8I7|RL16_BACAH', 'NP_8.2'}, accession.accessionIDs)
 
     def test_emptyDatabase(self):
-        protaccession_path = Path.cwd() / 'testdata' / 'empty_accession.gz'
-        pdbaccession_path = Path.cwd() / 'testdata' / 'empty_accession.gz'
+        protaccession_path = Path.cwd() / 'data' / 'empty_accession.gz'
+        pdbaccession_path = Path.cwd() / 'data' / 'empty_accession.gz'
         accession = Accession({21, 42})
         accession.read_accessions(protaccession_path, pdbaccession_path, threads=4)
         self.assertEqual(set(), accession.accessionIDs)
-        protaccession_path = Path.cwd() / 'testdata' / 'empty_accession'
+        protaccession_path = Path.cwd() / 'data' / 'empty_accession'
         accession = Accession({21, 42})
         accession.read_accessions(protaccession_path, pdbaccession_path, threads=4)
         self.assertEqual(set(), accession.accessionIDs)

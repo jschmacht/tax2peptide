@@ -120,7 +120,7 @@ def main():
                         help='Make the final database non redundant in regard to sequences, headers are concatenated.')
     parser.add_argument('-u', '--threads', dest='threads', type=positive_integer, action="store",
                         help='Number of threads for using multiprocessing. Default = number of cores.')
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument('--version', action='version', version='%(prog)s 0.0')
 
     options = parser.parse_args()
 
@@ -208,7 +208,7 @@ def main():
                 database_folder.mkdir()
                 logger.exception("Folder of option --path (%s) does not exist and is now new generated. All needed files "
                                  "are downloaded and stored in given direction. " % database_folder, exc_info=True)
-                prot_gz_b, prot_b, pdb_b, taxdump_b, db_gz_b, db_b = False
+                prot_gz_b, prot_b, pdb_b, taxdump_b, db_gz_b, db_b = False, False, False, False, False, False
             except OSError:
                 logger.exception("Folder of option --path (%s) does not exist and con not be created." % database_folder,
                                  exc_info=True)
@@ -220,7 +220,7 @@ def main():
         try:
             database_folder.mkdir()
             logger.info("Downloaded databases are saved in direction %s" % database_folder)
-            taxdump_b, prot_gz_b, prot_b, pdb_b, db_gz_b, db_b = False
+            taxdump_b, prot_gz_b, prot_b, pdb_b, db_gz_b, db_b = False, False, False, False, False, False
         except FileExistsError:
             path_to_db = database_folder/db_dict_name[options.database]
             logger.info("Database folder %s already exists. Checking for content." % database_folder)
@@ -230,8 +230,8 @@ def main():
                 database_folder/url_pdbaccession2taxID.split('/')[-1], path_to_db, path_to_db.parents[0]/path_to_db.stem])
                 if db_b: path_to_db = path_to_db.parents[0] / path_to_db.stem
             else:
-                taxdump_b, db_gz_b, db_b = Output.check_content([database_folder / url_taxdump.split('/')[-1], path_to_db])
-                prot_gz_b, prot_b, pdb_b = False
+                taxdump_b, db_gz_b, db_b = Output.check_content([database_folder / url_taxdump.split('/')[-1], path_to_db, path_to_db.parents[0]/path_to_db.stem])
+                prot_gz_b, prot_b, pdb_b = False, False, False
                 if db_b: path_to_db = path_to_db.parents[0] / path_to_db.stem
         except OSError:
             logger.exception("No permission to create new folders.", exc_info=True)
@@ -413,7 +413,7 @@ def main():
     if options.non_redundant:
         logger.info('Start creating non redundant database.')
         nr = str(output_path.parents[0] / str(output_path.stem + '_nr.fasta'))
-        NonRedundant.sequence_cleaner(output_path, nr, wt.with_taxon_ID)
+        NonRedundant.sequence_cleaner(output_path, nr, with_taxon_ID)
         logger.info('Database is ready and saved to %s' % nr)
 
     logger.info('Program finished.')

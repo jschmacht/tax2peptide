@@ -9,10 +9,10 @@ class TestNonRedundant(unittest.TestCase):
         pass
 
     def test_sequence_cleaner(self):
-        test_db = Path.cwd() / 'testdata/redundant_test2.fasta'
-        shutil.copyfile('testdata/redundant_test.fasta', 'testdata/redundant_test2.fasta')
-        test_nr = 'testdata/redundant_test2_nr.fasta'
-        file = open('testdata/non_redundant_test.fasta', "r")
+        test_db = Path.cwd() / 'data/redundant_test2.fasta'
+        shutil.copyfile('data/redundant_test.fasta', 'data/redundant_test2.fasta')
+        test_nr = 'data/redundant_test2_nr.fasta'
+        file = open('data/non_redundant_test.fasta', "r")
         result_database = file.read()
         file.close()
         NonRedundant.sequence_cleaner(test_db, test_nr, False)
