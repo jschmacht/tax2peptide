@@ -1,10 +1,10 @@
 # tax2peptide
 
 tax2peptide creates based on the given taxon IDs and a reference database a taxon specific database in fasta format. This taxon specific database contains according to the selected options all fasta entries of:
-* **the given taxon IDs and their descendant taxon IDs in the phylogenetic tree**
-* **the given taxon IDs (option --no_descendants)** 
-* **the given taxon IDs adapted to specified level up in the phylogenetic tree and their descendant taxon IDs (option --level)**
-* **the given taxon IDs and their descendant taxon IDs in the phylogenetic tree until level species, taxonIDs with lower level are not included (option --species)**
+* given taxon IDs and their descendant taxon IDs in the phylogenetic tree
+* given taxon IDs (option --no_descendants)
+* given taxon IDs adapted to specified level up in the phylogenetic tree and their descendant taxon IDs (option --level)
+* given taxon IDs and their descendant taxon IDs in the phylogenetic tree until level species, taxonIDs with lower level are not included (option --species)
 
 Databases from which the matching entries are read out are the NCBI non-redundant peptide database, swissprot, uniprot or trembl database. Also user-defined databases are possible as long as the header of the database contains taxonIDs in form of "OX=NUMBER" or contains NCBI/uniprot accession numbers.
 Using uncompressed databases would speed up the program considerably.
@@ -24,6 +24,10 @@ pip install tqdm biopython wget
 
 ### Installing
 ```
+pip install tax2peptide
+```
+or
+```
 pip install -i https://pypi.org/simple/tax2peptide-jschmacht 
 ```
 
@@ -32,8 +36,9 @@ pip install -i https://pypi.org/simple/tax2peptide-jschmacht
 
 Tax2Peptide is a command line tool and starts with: 
 ```
-python3 path/to/tax2peptide -options
+python3 path/to/tax2peptide [options]
 ```
+
 
 ### Options:
 -i 	--input   TaxID input file: tabular file containing a column of NCBI taxon IDs. Columns tab separated.
