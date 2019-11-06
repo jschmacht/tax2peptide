@@ -18,10 +18,10 @@ from datetime import date
 import logging
 from Download import Download
 from TaxonGraph import TaxonGraph
+from DatabaseCleaner import DatabaseCleaner
 from Accession import Accession
 from TestFile import TestFile
 from WriteCustomDB import WriteCustomDB
-from NonRedundant import NonRedundant
 from Output import Output
 import shutil
 import pickle
@@ -120,6 +120,8 @@ def main():
                         help='Make the final database non redundant in regard to sequences, headers are concatenated.')
     parser.add_argument('-u', '--threads', dest='threads', type=positive_integer, action="store",
                         help='Number of threads for using multiprocessing. Default = number of cores.')
+    parser.add_argument('-x', '--reduce_header', dest='reduce_header', action='store_true', default=False,
+                        help='Reduce the long headers of NCBI entries to accession IDs. Use only for NCBI databases.')
     parser.add_argument('--version', action='version', version='%(prog)s 0.0')
 
     options = parser.parse_args()
@@ -411,10 +413,15 @@ def main():
 
     # non redundant database
     if options.non_redundant:
-        logger.info('Start creating non redundant database.')
-        nr = str(output_path.parents[0] / str(output_path.stem + '_nr.fasta'))
-        NonRedundant.sequence_cleaner(output_path, nr, with_taxon_ID)
-        logger.info('Database is ready and saved to %s' % nr)
+        DatabaseCleaner.non_redundant(output_path, with_taxon_ID)
+        # remove redundant database:
+        output_path.unlink()
+
+    if options.reduce_header and not with_taxon_ID:
+        # reduce headers of NCBI database
+        DatabaseCleaner.reduce_header(output_path)
+        output_path.unlink()
+
 
     logger.info('Program finished.')
     exit(0)

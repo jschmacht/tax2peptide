@@ -25,7 +25,6 @@ class TestCustomTaxonDB(unittest.TestCase):
 
     def test_ncbi_db_search(self):
         accessionIDs = {'NP_268346.1', 'NP_5.2', 'NP_3.2', 'AAN62213.1', 'NP_9.2', 'pl_12'}
-        #accessionIDs = {'AAN62213.1'}
         write_db = WriteCustomDB("./data/example_database_ncbi.fasta", "./data/customized_ncbi.fasta")
         write_db.read_database(with_taxon_ID=False, gzipped=False, threads=3, accessions=accessionIDs)
         test_database = open("./data/result_test_ncbi.fasta", "r")
