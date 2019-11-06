@@ -1,6 +1,6 @@
 # tax2peptide
 
-tax2peptide creates based on the given taxon IDs and a reference database a taxon specific database in fasta format. This taxon specific database contains according to the selected options all fasta entries of:
+tax2peptide creates based on given taxon IDs and a reference database a taxon specific database in fasta format. This taxon specific database contains according to the selected options all fasta entries of:
 * given taxon IDs and their descendant taxon IDs in the phylogenetic tree
 * given taxon IDs (option --no_descendants)
 * given taxon IDs adapted to specified level up in the phylogenetic tree and their descendant taxon IDs (option --level)
@@ -17,7 +17,7 @@ Tax2Peptide is a python3 command line tool. It can be installed as pypi-package 
 
 Python3
 
-needed packages: tqdm, biopython, wget
+required packages: tqdm, biopython, wget
 ```
 pip install tqdm biopython wget
 ```
@@ -31,7 +31,6 @@ or
 pip install -i https://pypi.org/simple/tax2peptide-jschmacht 
 ```
 
-
 ## Deployment
 
 Tax2Peptide is a command line tool and starts with: 
@@ -39,50 +38,39 @@ Tax2Peptide is a command line tool and starts with:
 python3 path/to/tax2peptide [options]
 ```
 
-
 ### Options:
--i 	--input   TaxID input file: tabular file containing a column of NCBI taxon IDs. Columns tab separated.
-
--c 	--column   The column (zero-based) in the tabular file that contains Taxon IDs. Default = 0.
-
--t 	--taxon   NCBI taxon ID/s for database extraction. Multiple taxonIDs seperated by space.
-
--d 	--database   Database choice for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot.
-
--p 	--path   Path to folder with all needed databases: taxdump.tar.gz (for all databases), prot.accession2taxid or prot.accession2taxid.gz and pdb.accession2taxid.gz (for ncbi databases). Optional: peptide_database named: nr/nr.gz or uniprot_trembl.fasta/uniprot_trembl.fasta.gz or uniprot_sprot.fasta/uniprot_sprot.fasta.gz or uniprot.fasta./uniprot.fasta.gz
-
--o 	--out   File name and direction of the result taxon specified peptide database. Default = /taxon_specified_db_DATE/taxon_database.fasta
-
--n 	--dbname   Database name and direction. If database is in other folder than --path or have a different name.
-
--l 	--level   Hierarchy level up in anchestral tree. Choices: species, section, genus, tribe, subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom
-
--r 	--non_redundant   Make the final database non redundant in regard to sequences, headers are concatenated.
-
--z 	--no_descendants   Select peptide database only by given taxon IDs, descendant taxons are excluded.
-
--s 	--species   Select peptide database only until taxonomic level "species", descendants from species are excluded.
-
--u 	--threads   Number of threads for using multiprocessing. Default = number of cores.
-
--x 	--reduce_header   Reduce the long headers of NCBI entries to accession IDs. Use only for NCBI databases.
+|   | option         | description
+|---|----------------|---------------------------------------------------------------------------------------------------------------------------|
+|-i |--input         | TaxID input file: tabular file containing a column of NCBI taxon IDs. Columns tab separated.
+|-c |--column        | The column (zero-based) in the tabular file that contains Taxon IDs. Default = 0.
+|-t |--taxon         | NCBI taxon ID/s for database extraction. Multiple taxonIDs seperated by space.
+|-d |--database      | Database choice for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot.
+|-p |--path          | Path to folder with all required databases: taxdump.tar.gz (for all databases), prot.accession2taxid or prot.accession2taxid.gz and pdb.accession2taxid.gz (for ncbi databases). Optional: peptide_database named: nr/nr.gz or uniprot_trembl.fasta/uniprot_trembl.fasta.gz or uniprot_sprot.fasta/uniprot_sprot.fasta.gz or uniprot.fasta./uniprot.fasta.gz
+|-o |--out           | File name and direction of the result taxon specified peptide database. Default = /taxon_specified_db_DATE/taxon_database.fasta
+|-n |--dbname        | Database name and direction. If database is in other folder than --path or have a different name.
+|-l |--level         | Hierarchy level up in anchestral tree. Choices: species, section, genus, tribe, subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom
+|-r |--non_redundant | Make the final database non redundant in regard to sequences, headers are concatenated.
+|-z |--no_descendants| Select peptide database only by given taxon IDs, descendant taxons are excluded.
+|-s |--species       | Select peptide database only until taxonomic level "species", descendants from species are excluded.
+|-u |--threads       | Number of threads for using multiprocessing. Default = number of cores.
+|-x |--reduce_header | Reduce the long headers of NCBI entries to accession IDs. Use only for NCBI databases.
 
 ### Dependencies:
-Needed databases for NCBI reference database: 
-* protaccession2tax.gz / protaccession2tax
-* pdbaccession2tax.gz
-* taxdump.tar.gz
-* nr.gz / nr
+Required databases for generation of taxon specific databases from NCBI reference database 
+* **protaccession2tax.gz / protaccession2tax**
+* **pdbaccession2tax.gz**
+* **taxdump.tar.gz**
+* **nr.gz / nr**
 
-Needed databases for uniprot/swissprot/trembl reference database: 
-* taxdump.tar.gz
-* uniprot.fasta.gz / uniprot.fasta / uniprot_sprot.fasta.gz / uniprot_sprot.fasta / uniprot_trembl.fasta.gz / uniprot_trembl.fasta
+Required databases for generation of taxon specific databases from uniprot/swissprot/trembl reference database: 
+* **taxdump.tar.gz**
+* **uniprot.fasta.gz / uniprot.fasta / uniprot_sprot.fasta.gz / uniprot_sprot.fasta / uniprot_trembl.fasta.gz / uniprot_trembl.fasta**
 
 All database files should be downloaded the same day and stored in the same folder.
 
 #### Databases
-All should be downloaded at the same date as the peptide database to ensure successful accession matching.
-The database can be downloaded manually or downloaded by Tax2Peptide with option --database {ncbi, uniprot, trembl, swissprot}, file integrity would be md5-checked.
+All databases should be downloaded at the same date as the peptide database to ensure successful accession matching.
+The database can be downloaded manually or downloaded by tax2peptide with option --database {ncbi, uniprot, trembl, swissprot}
 
 
 | database name       | description                                                         |source | adress
@@ -95,7 +83,7 @@ The database can be downloaded manually or downloaded by Tax2Peptide with option
 | pdb.accession2taxid |contain links between accession IDs and taxonomic lineage (taxon IDs)|NCBI   | ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/pdb.accession2taxid.gz                                            |
 | taxdump             |tar-gz-compressed taxdump file containing information about the phylogenetic lineage and links between taxIDs and scientific names etc.|NCBI   |ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz            |
 
-#### Usage with download: 
+#### Usage of tax2peptide with database download: 
 All needed databases will be downloaded to specified path (option --path). If not specified a folder with name databases_DATE will be used as default.
 
 Examples of usage:
@@ -108,12 +96,13 @@ tax2peptide.py -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with
 ```
 tax2peptide.py -d ncbi -p path/to/my_new_databases -i path/to/input/taxon_ID_file  -> new Folder/used Folder my_new_databases with: protaccession2tax.gz, pdbaccession2tax.gz, taxdump.tar.gz, nr.gz
 ```
-#### Usage if all database files are already downloaded:
-- option --path determines folder with all needed databases
-(optional --dbname
+#### Usage of tax2peptide if all database files are already downloaded:
+positional arguments:  --path                 determines folder with all needed databases
+positional arguments:  --taxon AND/OR --input at least one taxon ID or taxon ID input file must be provided
+optional arguments:    --dbname               determines location/name of database (if reference database is not in --path or have different name (see table for standard names)
 
-- at least one taxon ID or taxon ID input file must be provided
-Path will be checked for all required database files and missing databases will be downloaded
+--path is beeing checked for all required database files and missing databases are downloaded.
+
 Examples of usage:
 ```
 tax2peptide.py -p path/to/folder -n path/to/reference_database -t 11111 22222 -o path/my_taxon_specified_database.fasta
