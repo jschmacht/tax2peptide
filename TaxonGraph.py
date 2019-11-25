@@ -14,12 +14,12 @@ class TaxonGraph():
         self.scientific_alternative_name_dict = {}
         self.child_parent_dict = {}
         self.synonym_taxon_dict = {}
-        self.order = {'no rank': 0, 'subspecies': 1, 'varietas': 1, 'forma': 1, 'species': 2, 'species subgroup': 3,
-                 'species group': 4, 'series': 5, 'subsection': 6, 'section': 7, 'subgenus': 8, 'genus': 9,
-                 'subtribe': 10, 'tribe': 11, 'subfamily': 12, 'family': 13, 'superfamily': 14, 'parvorder': 15,
-                 'infraorder': 16, 'suborder': 17, 'order': 18, 'superorder': 19, 'subcohort': 20, 'cohort': 21,
-                 'infraclass': 22, 'subclass': 23, 'class': 24, 'superclass': 25, 'subphylum': 26, 'phylum': 27,
-                 'superphylum': 28, 'subkingdom': 29, 'kingdom': 30, 'superkingdom': 31}
+        self.order = {'no rank': 0, 'varietas': 1, 'forma': 1, 'subspecies': 2, 'species': 3, 'species subgroup': 4,
+                 'species group': 5, 'series': 6, 'subsection': 7, 'section': 8, 'subgenus': 9, 'genus': 10,
+                 'subtribe': 11, 'tribe': 12, 'subfamily': 13, 'family': 14, 'superfamily': 15, 'parvorder': 16,
+                 'infraorder': 17, 'suborder': 18, 'order': 19, 'superorder': 20, 'subcohort': 21, 'cohort': 22,
+                 'infraclass': 23, 'subclass': 24, 'class': 25, 'superclass': 26, 'subphylum': 27, 'phylum': 28,
+                 'superphylum': 29, 'subkingdom': 30, 'kingdom': 31, 'superkingdom': 32}
 
     # create taxon graph from nodes.dmp (in taxdump.tar.gz archive), a dictionary with taxon-ID-species name 
     # and a dictionary with changed/merged taxon IDs
@@ -68,7 +68,7 @@ class TaxonGraph():
         """
          :param taxID: tax ID for searching all children
          :type taxID:  positive int
-         :return: all child taxon IDs of one taxon ID
+         :return: set of all child taxon IDs of one taxon ID
          """
         if self.parent_child_graph == {}:
             raise Exception("The parent_child_graph is empty. Check if file is correct and if first function "

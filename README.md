@@ -17,10 +17,6 @@ Tax2Peptide is a python3 command line tool. It can be installed as pypi-package 
 
 Python3
 
-required packages: tqdm, biopython, wget
-```
-pip install tqdm biopython wget
-```
 
 ### Installing
 ```
@@ -47,9 +43,9 @@ python3 path/to/tax2peptide [options]
 |-d |--database      | Database choice for analysis or for download. Choices: ncbi, uniprot, tremble, swissprot.
 |-p |--path          | Path to folder with all required databases: taxdump.tar.gz (for all databases), prot.accession2taxid or prot.accession2taxid.gz and pdb.accession2taxid.gz (for ncbi databases). Optional: peptide_database named: nr/nr.gz or uniprot_trembl.fasta/uniprot_trembl.fasta.gz or uniprot_sprot.fasta/uniprot_sprot.fasta.gz or uniprot.fasta./uniprot.fasta.gz
 |-o |--out           | File name and direction of the result taxon specified peptide database. Default = /taxon_specified_db_DATE/taxon_database.fasta
-|-n |--dbname        | Database name and direction. If database is in other folder than --path or have a different name.
+|-n |--dbname        | Database name and direction. If database is in other folder than --path or name deviates from standard names
 |-l |--level         | Hierarchy level up in anchestral tree. Choices: species, section, genus, tribe, subfamily, family, superfamily, order, superorder, class, phylum, kingdom, superkingdom
-|-r |--non_redundant | Make the final database non redundant in regard to sequences, headers are concatenated.
+|-r |--non_redundant | Makes the final database non redundant in regard to sequences, headers are concatenated.
 |-z |--no_descendants| Select peptide database only by given taxon IDs, descendant taxons are excluded.
 |-s |--species       | Select peptide database only until taxonomic level "species", descendants from species are excluded.
 |-u |--threads       | Number of threads for using multiprocessing. Default = number of cores.
@@ -57,14 +53,14 @@ python3 path/to/tax2peptide [options]
 
 ### Dependencies:
 Required databases for generation of taxon specific databases from NCBI reference database 
-* **protaccession2tax.gz / protaccession2tax**
-* **pdbaccession2tax.gz**
-* **taxdump.tar.gz**
-* **nr.gz / nr**
+* protaccession2tax.gz / protaccession2tax
+* pdbaccession2tax.gz
+* taxdump.tar.gz
+* nr.gz / nr
 
 Required databases for generation of taxon specific databases from uniprot/swissprot/trembl reference database: 
-* **taxdump.tar.gz**
-* **uniprot.fasta.gz / uniprot.fasta / uniprot_sprot.fasta.gz / uniprot_sprot.fasta / uniprot_trembl.fasta.gz / uniprot_trembl.fasta**
+* taxdump.tar.gz
+* uniprot.fasta.gz / uniprot.fasta / uniprot_sprot.fasta.gz / uniprot_sprot.fasta / uniprot_trembl.fasta.gz / uniprot_trembl.fasta
 
 All database files should be downloaded the same day and stored in the same folder.
 

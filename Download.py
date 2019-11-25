@@ -3,7 +3,6 @@ import urllib.request
 import logging.config
 import wget
 from pathlib import Path
-from shutil import which
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +17,11 @@ class Download:
         """
         self.url = url
         self.hash = md5
-        self.path = Path(path)
+        self.path = Path(str(path) + '_part')
+        self.path_checked = Path(path)
         self.num_bytes = 0
     
-	# Validates a file against MD5 hash value
+    # Validates a file against MD5 hash value
     def validate_file(self):
         """
             return: True if md5 hash value of downloaded file is correct
@@ -32,8 +32,8 @@ class Download:
                 with open(str(self.path), "rb") as f:
                     for chunk in iter(lambda: f.read(4096), b""):
                         calc_md5.update(chunk)
-                logger.info("Md5 hash value of correct file: " + str(self.hash))
-                logger.info("Md5 hash value of actual file: " + str(calc_md5.hexdigest()))
+                logger.debug("Md5 hash value of correct file: " + str(self.hash))
+                logger.debug("Md5 hash value of actual file: " + str(calc_md5.hexdigest()))
                 return calc_md5.hexdigest() == self.hash
             except FileNotFoundError:
                 logger.exception("Path to file to be validated does not exist. No md5 validation possible.", exc_info=True)
@@ -42,7 +42,7 @@ class Download:
             return False
 
     # download with python package urllib.request
-    def download_with_urllib(self):
+    def download_with_urllib(self, file_size):
         logger.info("Start download from " + self.url + "to location" + str(self.path) + "with urllib.")
         try:
             urllib.request.urlretrieve(self.url, str(self.path))
@@ -51,7 +51,7 @@ class Download:
             logger.exception("Download was not successful. Check internet connection and run again. ", exc_info=True)
             exit(1)
         if self.path.stat().st_size < file_size:
-            logger.info("Download of the file from " + str(self.path) + " failed. Please run again.")
+            logger.error("Download of the file from " + str(self.path) + " failed. Please run again.")
             exit(1)
 
     # download with python package urllib.request, resumable if header contains range
@@ -63,6 +63,7 @@ class Download:
         logger.info("Start resumable download from " + self.url + "to location" + str(self.path) + ".")
         if self.path.exists():
             # Open file for appending in binary format
+            exist_size = self.path.stat().st_size
             output_file = open(str(self.path), "ab")
             # If the file exists, then download only the remainder
         else:
@@ -100,26 +101,26 @@ class Download:
         # catch error 403: Forbiddden, some server do not accept wget
         except Exception:
             logger.exception("Download of the file from " + self.url + " with wget failed. Switch to urllib download.", exc_info=True)
-            self.download_with_urllib()
+            self.download_with_urllib(file_size)
         if self.path.stat().st_size == 0:
             logger.info("Download of the file from " + self.url + " with wget failed. Switch to urllib download.")
-            self.download_with_urllib()
+            self.download_with_urllib(file_size)
         elif self.path.stat().st_size < file_size:
-            logger.info("Download of the file from " + str(self.path) + " is not complete. Please run again.")
+            logger.error("Download of the file from " + str(self.path) + " is not complete. Please run again.")
             exit(1)
 
     def download(self):
         try:
             # check to quit the download if the whole file is already downloaded.
-            exist_size = self.path.stat().st_size if self.path.exists() else 0
+            exist_size = self.path_checked.stat().st_size if self.path_checked.exists() else 0
             file_size = int((urllib.request.urlopen(self.url)).headers['Content-Length'])
 
             if file_size == exist_size:
-                logger.info('File ' + str(self.path) + ' was already downloaded from URL ' + self.url + ' .')
+                logger.debug('File ' + str(self.path) + ' was already downloaded from URL ' + self.url + ' .')
             if file_size > exist_size:
                 # check if website accept range in header
                 if urllib.request.urlopen(self.url).headers['Range']:
-                    self.download_with_range(file_size, exist_size)
+                    self.download_with_range(file_size)
                 # download with wget
                 else:
                     self.download_with_wget(file_size)
@@ -129,8 +130,11 @@ class Download:
         # if md5 hash is given, downloaded file is validated against it
         if self.hash:
             if self.validate_file():
+                self.path.rename(self.path_checked)
                 logger.info('File integrity is md5 checked.')
             else:
-                logger.error('Md5 validation of the file %s failed, program continues without md5-check. '
+                logger.error('Md5 validation of the file %s failed, start download again. '
                              % self.url.split('/')[-1])
+                self.path.unlink()
+                self.download()
 

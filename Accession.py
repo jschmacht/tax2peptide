@@ -114,7 +114,7 @@ class Accession:
                     fields = [item.strip('\t') for item in line.split('\t')]
                     if int(fields[2]) in self.taxIDs:
                         self.accessionIDs.add(fields[1])
-            logger.info('Number of matching accession IDs: %d' % len(self.accessionIDs))
+            logger.debug('Number of matching accession IDs: %d' % len(self.accessionIDs))
         except FileNotFoundError:
             logger.exception("Path to accession file %s does not exist." % pdbaccession_path, exc_info=True)
             exit(1)

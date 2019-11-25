@@ -22,7 +22,7 @@ class TestDatabaseCleaner(unittest.TestCase):
 
     def test_reduce_ncbi_header(self):
         # copy example database
-        DatabaseCleaner.reduce_header("./data/example_database_ncbi.fasta")
+        DatabaseCleaner.reduce_header("./data/example_database_ncbi_rh2.fasta")
         result_database = open("./data/example_database_ncbi_rh.fasta", "r")
         test_database = open("./data/example_database_ncbi_reduced_header.fasta", "r")
         td = test_database.read()

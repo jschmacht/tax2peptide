@@ -59,13 +59,9 @@ class DatabaseCleaner:
                     for line in database:
                         if line.startswith('>'):
                             if '\x01' in line:
-                                out.write('>')
-                                multiple_accessionIDs = [hdr.split(' ')[0] for hdr in line[1:].split('\x01')]
-                                for accessionID in multiple_accessionIDs[:-1]:
-                                    out.write(accessionID + '\x01')
-                                out.write(multiple_accessionIDs[-1] + '\n')
+                                out.write('>' + '\x01'.join([hdr.split(' ')[0] for hdr in line[1:].strip().split('\x01')])+ '\n')
                             else:
-                                accessionID = (line[1:].split(' ')[0])
+                                accessionID = (line[1:].strip().split(' ')[0])
                                 out.write('>' + accessionID + '\n')
                         else:
                             out.write(line)

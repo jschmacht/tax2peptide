@@ -151,10 +151,10 @@ class WriteCustomDB:
     # divide database file in chunks for parallel processing
     def divide_into_chunks(self):
         chunks = []
-        logger.info('Start dividing database file in chunks.')
+        logger.debug('Start dividing database file in chunks.')
         for chunk in self.read_in_chunks():
             chunks.append(chunk)
-        logger.info('Database divided into %d chunks.' % len(chunks))
+        logger.debug('Database divided into %d chunks.' % len(chunks))
         return chunks
       
     # read database and store position information in list (value) to taxon_ID
@@ -175,7 +175,7 @@ class WriteCustomDB:
             with gzip.open(str(path_to_gz_file), 'rb') as f_in:
                 with open(str(self.path_to_file), 'wb') as f_out:
                     shutil.copyfileobj(f_in, f_out)
-            logger.info('Unzipping done.')
+            logger.debug('Unzipping done.')
 
         if not threads:
             threads = mp.cpu_count()
@@ -208,7 +208,7 @@ class WriteCustomDB:
             # in windows no forking possible and shared accessionIDs are to big to copy to different processes, in win only linear possible
             if not os.name == 'posix':
                 try:
-                    logger.info('Count lines...')
+                    logger.debug('Count lines...')
                     with open(str(self.path_to_file), "rt") as database:
                         self.linenumber = sum(bl.count("\n") for bl in self.blocks(database))
                     logger.info('Reading/Writing...')
@@ -226,7 +226,7 @@ class WriteCustomDB:
                         # here multiprocessing starts
                         i, j = 0, 0
                         ten = int(len(chunks) / 10)
-                        for fasta in pool.imap_unordered(self.read_ncbi, chunks):
+                        for fasta in pool.imap_unordered(self.read_ncbi_mp, chunks):
                             if i == ten:
                                 j += 1
                                 print('%d0%% readed.' % j)
@@ -236,7 +236,7 @@ class WriteCustomDB:
                     pool.close()
                     pool.join()
                 except FileNotFoundError:
-                    logger.exception("Path to database (%s) does not exist." %str(self.path_custom_db), exc_info=True)
+                    logger.exception("Path to database (%s) does not exist." % str(self.path_custom_db), exc_info=True)
                     exit(1)
         
         # remove tmp dezipped file
