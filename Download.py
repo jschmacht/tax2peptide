@@ -1,8 +1,13 @@
 import hashlib
 import urllib.request
 import logging.config
-import wget
 from pathlib import Path
+
+try:
+    import wget
+    wget_b = True
+except ImportError:
+    wget_b = False
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +22,8 @@ class Download:
         """
         self.url = url
         self.hash = md5
-        self.path = Path(str(path) + '_part')
-        self.path_checked = Path(path)
+        self.path_part = Path(str(path) + '_part')
+        self.path = Path(path)
         self.num_bytes = 0
     
     # Validates a file against MD5 hash value
@@ -43,16 +48,23 @@ class Download:
 
     # download with python package urllib.request
     def download_with_urllib(self, file_size):
-        logger.info("Start download from " + self.url + "to location" + str(self.path) + "with urllib.")
+        print("Start download from " + self.url + "to " + str(self.path) + " with urllib.")
+        logger.info("Start download from " + self.url + "to " + str(self.path) + " .")
         try:
-            urllib.request.urlretrieve(self.url, str(self.path))
-            logger.info("Download of " + str(self.url) + " file to " + str(self.path) + " was successful.")
+            urllib.request.urlretrieve(self.url, str(self.path_part))
         except urllib.error.URLError:
-            logger.exception("Download was not successful. Check internet connection and run again. ", exc_info=True)
+            logger.exception("Download from url " + str(self.url) + " failed. "
+                             "Check internet connection and run again. ", exc_info=True)
             exit(1)
-        if self.path.stat().st_size < file_size:
-            logger.error("Download of the file from " + str(self.path) + " failed. Please run again.")
+        except Exception:
+            print("2 ")
+        if self.path_part.stat().st_size < file_size:
+            logger.error("Download of the file from " + str(self.url) + " failed. Please run again.")
             exit(1)
+        if self.path_part.stat().st_size == file_size:
+            self.path_part.rename(self.path)
+            logger.info("Download of " + str(self.url) + " file to " + str(self.path) + " was successful.")
+
 
     # download with python package urllib.request, resumable if header contains range
     def download_with_range(self, file_size, exist_size):
@@ -60,14 +72,14 @@ class Download:
         :param file-size: size of the complete file
         :param exist-size: size of the partial downloaded file
         """
-        logger.info("Start resumable download from " + self.url + "to location" + str(self.path) + ".")
-        if self.path.exists():
+        logger.info("Start resumable download from " + self.url + "to location" + str(self.path_part) + ".")
+        if self.path_part.exists():
             # Open file for appending in binary format
-            exist_size = self.path.stat().st_size
-            output_file = open(str(self.path), "ab")
+            exist_size = self.path_part.stat().st_size
+            output_file = open(str(self.path_part), "ab")
             # If the file exists, then download only the remainder
         else:
-            output_file = open(str(self.path), "wb")
+            output_file = open(str(self.path_part), "wb")
         header = {"Range": "bytes=%s-" % exist_size}
         req = urllib.request.Request(self.url, headers=header)
         response = urllib.request.urlopen(req)
@@ -85,36 +97,40 @@ class Download:
         response.close()
         output_file.close()
         logger.debug("downloaded", self.num_bytes, "bytes from", self.url)
+        if self.path_part.stat().st_size == file_size:
+            self.path_part.rename(self.path)
+            logger.info("Download of " + str(self.url) + " file to " + str(self.path) + " was successful.")
 
     # download with python package wget
     def download_with_wget(self, file_size):
         """
         :param file-size: size of the complete file
         """
-        logger.info("Start download from " + self.url + " to location " + str(self.path) + " with wget.")
+        logger.info("Start download from " + self.url + " to location " + str(self.path) + ".")
         try:
             for i in range(5):
-                wget.download(str(self.url), str(self.path))
-                if self.path.stat().st_size == file_size:
-                    logger.info("Download of the file to folder from" + self.url + " to " + str(self.path) + " was successful")
-                    break
+                wget.download(str(self.url), str(self.path_part))
+                if self.path_part.stat().st_size == file_size:
+                    self.path_part.rename(self.path)
+                    print("Download of " + str(self.url) + " file to " + str(self.path) + " was successful.")
+                    logger.info("Download of " + str(self.url) + " file to " + str(self.path) + " was successful.")
+                    return
         # catch error 403: Forbiddden, some server do not accept wget
         except Exception:
             logger.exception("Download of the file from " + self.url + " with wget failed. Switch to urllib download.", exc_info=True)
             self.download_with_urllib(file_size)
-        if self.path.stat().st_size == 0:
+        if self.path_part.stat().st_size == 0:
             logger.info("Download of the file from " + self.url + " with wget failed. Switch to urllib download.")
             self.download_with_urllib(file_size)
-        elif self.path.stat().st_size < file_size:
-            logger.error("Download of the file from " + str(self.path) + " is not complete. Please run again.")
+        elif self.path_part.stat().st_size < file_size:
+            logger.error("Download of the file from " + str(self.path_part) + " is not complete. Please run again.")
             exit(1)
 
     def download(self):
         try:
             # check to quit the download if the whole file is already downloaded.
-            exist_size = self.path_checked.stat().st_size if self.path_checked.exists() else 0
+            exist_size = self.path.stat().st_size if self.path.exists() else 0
             file_size = int((urllib.request.urlopen(self.url)).headers['Content-Length'])
-
             if file_size == exist_size:
                 logger.debug('File ' + str(self.path) + ' was already downloaded from URL ' + self.url + ' .')
             if file_size > exist_size:
@@ -122,19 +138,19 @@ class Download:
                 if urllib.request.urlopen(self.url).headers['Range']:
                     self.download_with_range(file_size)
                 # download with wget
-                else:
+                elif wget_b:
                     self.download_with_wget(file_size)
+                else:
+                    self.download_with_urllib(file_size)
         except urllib.error.URLError:
             logger.exception('Download from url %s failed.' % self.url, exc_info=True)
 
         # if md5 hash is given, downloaded file is validated against it
         if self.hash:
             if self.validate_file():
-                self.path.rename(self.path_checked)
                 logger.info('File integrity is md5 checked.')
             else:
-                logger.error('Md5 validation of the file %s failed, start download again. '
+                logger.error('Md5 validation of the file %s failed, download starts again. '
                              % self.url.split('/')[-1])
-                self.path.unlink()
                 self.download()
 

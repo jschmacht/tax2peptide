@@ -17,6 +17,10 @@ Tax2Peptide is a python3 command line tool. It can be installed as pypi-package 
 
 Python3
 
+required packages: tqdm, biopython, wget
+```
+pip install tqdm biopython wget
+```
 
 ### Installing
 ```

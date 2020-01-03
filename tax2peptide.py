@@ -26,8 +26,8 @@ from Output import Output
 import shutil
 import pickle
 from pathlib import Path
+from version import __version__
 
-exec(open('version.py').read())
 
 # Initializing logger, log file saved in direction output_path = same as database
 def initialize_logger(output_path, verbose=None):
@@ -133,7 +133,7 @@ def main():
                         help='Number of threads for using multiprocessing. Default = number of cores.')
     parser.add_argument('-x', '--reduce_header', dest='reduce_header', action='store_true', default=False,
                         help='Reduce the long headers of NCBI entries to accession IDs. Use only for NCBI databases.')
-    parser.add_argument('--version', action='version', version=('%(prog)s' + ' version ' + __version__))
+    parser.add_argument('--version', action='version', version=('version ' + __version__))
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
                         help='Verbose shows details about program progress and more information.')
 
@@ -406,7 +406,7 @@ def main():
     with_taxon_ID = TestFile.test_uniprot(path_to_db)
     if not with_taxon_ID:
         accession = Accession(final_taxIDs)
-        logger.info('Read accession files.')
+        logger.debug('Read accession files.')
         if prot_b:
             accession.read_accessions(database_folder/'prot.accession2taxid',
                                   database_folder/url_pdbaccession2taxID.split('/')[-1], options.threads)

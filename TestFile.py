@@ -12,7 +12,7 @@ class TestFile:
     def test_gzipped(path_to_file):
 
         try:
-            with open(path_to_file, 'rb') as f:
+            with open(str(path_to_file), 'rb') as f:
                 b = f.read(2)
             if b != b'\037\213':
                 gzipped = False
@@ -22,7 +22,7 @@ class TestFile:
             logger.exception("Path to database does not exist.", exc_info=True)
             exit(1)
         try:
-            with gzip.open(path_to_file, "rt") as db:
+            with gzip.open(str(path_to_file), "rt") as db:
                 db.readline()
         except OSError:
             gzipped = False
@@ -32,7 +32,7 @@ class TestFile:
     def test_uniprot(path_to_file):
         if TestFile.test_gzipped(path_to_file):
             try:
-                with gzip.open(path_to_file, "rt") as db:
+                with gzip.open(str(path_to_file), "rt") as db:
                     if re.search(' OX=', db.readline()):
                         with_taxon_ID = True
                     else:

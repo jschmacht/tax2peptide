@@ -27,7 +27,7 @@ class DatabaseCleaner:
                 if not with_taxon_ID:
                     sequences[sequence] += '\x01' + seq_record.description
                 else:
-                    sequences[sequence] += '|' + seq_record.description
+                    sequences[sequence] += '\x01' + seq_record.description
 
         # Write non redundant sequences
         try:

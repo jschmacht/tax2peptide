@@ -47,7 +47,6 @@ class Accession:
             f = open(str(self.prot_path), "rb")
             f.seek(chunk[0])
             part_list = []
-            i=0
             for line in f.read(chunk[1]).decode("utf-8").splitlines():
                 fields = [item.strip('\t') for item in line.split('\t')]
                 if int(fields[2]) in self.taxIDs:

@@ -10,10 +10,10 @@ class TaxonGraph():
         self.parent_child_graph = defaultdict(list)
         self.child_rank_dict = {}
         self.oldtax_newtax_dict = {}
-        self.taxon_name_dict = {}
-        self.scientific_alternative_name_dict = {}
         self.child_parent_dict = {}
-        self.synonym_taxon_dict = {}
+        #self.taxon_name_dict = {}
+        #self.scientific_alternative_name_dict = {}
+        #self.synonym_taxon_dict = {}
         self.order = {'no rank': 0, 'varietas': 1, 'forma': 1, 'subspecies': 2, 'species': 3, 'species subgroup': 4,
                  'species group': 5, 'series': 6, 'subsection': 7, 'section': 8, 'subgenus': 9, 'genus': 10,
                  'subtribe': 11, 'tribe': 12, 'subfamily': 13, 'family': 14, 'superfamily': 15, 'parvorder': 16,
@@ -31,7 +31,7 @@ class TaxonGraph():
         try:
             tar = tarfile.open(str(path_to_taxdump), "r:gz")
             nodes_handle = tar.extractfile("nodes.dmp")
-            names_handle = tar.extractfile("names.dmp")
+           # names_handle = tar.extractfile("names.dmp")
             merged_handle = tar.extractfile("merged.dmp")
 
             for line in nodes_handle:
@@ -41,12 +41,12 @@ class TaxonGraph():
             for line in merged_handle:
                 fields = [item.strip('\t') for item in line.decode(tarfile.ENCODING).split('|')]
                 self.oldtax_newtax_dict[int(fields[0])] = int(fields[1])
-            for line in names_handle:
-                fields = [item.strip('\t') for item in line.decode(tarfile.ENCODING).split('|')]
-                if fields[3] == 'scientific name':
-                    self.taxon_name_dict[int(fields[0])] = fields[1]
-                else:
-                    self.synonym_taxon_dict[fields[1]] = int(fields[0])
+            # for line in names_handle:
+            #     fields = [item.strip('\t') for item in line.decode(tarfile.ENCODING).split('|')]
+            #     if fields[3] == 'scientific name':
+            #         self.taxon_name_dict[int(fields[0])] = fields[1]
+            #     else:
+            #         self.synonym_taxon_dict[fields[1]] = int(fields[0])
 
             for key, value in self.child_parent_dict.items():
                 self.parent_child_graph[value].append(key)
@@ -59,7 +59,7 @@ class TaxonGraph():
             leaves = set(list(self.child_parent_dict.keys()) + list(self.child_parent_dict.values())) - set(self.parent_child_graph.keys())
             self.parent_child_graph.update(dict.fromkeys(leaves, []))
 
-        except tarfile.ReadError as e:
+        except tarfile.ReadError:
             logger.exception("Can not read taxdump.tar.gz File. Without taxon tree, program quits.", exc_info=True)
             exit(1)
 
@@ -110,7 +110,15 @@ class TaxonGraph():
             :param level: user given level for taxon search: string, one out of the strings in order dict
             :return taxon ID of specified level
                  """
-        #check if level is really up, else take original taxID
+        # check if taxID in graph
+        if taxID not in self.child_rank_dict.keys():
+            try:
+                taxID = self.oldtax_newtax_dict.get(taxID)
+            except KeyError:
+                logger.error(
+                    'User given taxon ID %d does not exist and is excluded from further analysis.' % taxID)
+                return
+         # check if level is really up, else take original taxID
         taxIDnew = taxID
         while self.child_rank_dict[taxIDnew] == 'no rank':
             taxIDnew = self.child_parent_dict.get(taxIDnew)
@@ -146,11 +154,21 @@ class TaxonGraph():
     # finds the next common ancestror of a set of taxon IDs
     def find_next_common_ancestor(self, taxonIDs):
         """
-        :param taxonIDs: set or list of taxon IDs
+        :param taxonIDs: set of taxon IDs
         :return common ancestor of all taxon IDs
                  """
+        # check if taxIDs in graph
+        for taxID in taxonIDs:
+            if taxID not in self.child_rank_dict.keys():
+                try:
+                    taxID = self.oldtax_newtax_dict.get(taxID)
+                except KeyError:
+                    logger.error(
+                        'User given taxon ID %d does not exist and is excluded from further analysis.' % taxID)
+                    taxonIDs.remove(taxID)
+
         # 1. find rank
-        ranks=[]
+        ranks = []
         for taxon in taxonIDs:
             taxIDnew = taxon
             while self.child_rank_dict[taxIDnew] == 'no rank':
@@ -173,6 +191,6 @@ class TaxonGraph():
                 taxon = self.child_parent_dict[taxon]
             # delete all list elem before found common ancestor
             index = ancestor_list.index(taxon)
-            ancestor_list=ancestor_list[index:]
+            ancestor_list = ancestor_list[index:]
 
         return taxon
