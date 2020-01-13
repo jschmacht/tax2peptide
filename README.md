@@ -90,7 +90,7 @@ The database can be downloaded manually or downloaded by tax2peptide with option
 #### Usage of tax2peptide with database download: 
 All needed databases will be downloaded to specified path (option --path). If not specified a folder with name databases_DATE will be used as default.
 
-Examples of usage:
+Examples of usage:\n
 if installed via pip exchange path/to/tax2peptide.py with: python -m tax2peptide
 ```
 tax2peptide.py -d uniprot -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with: taxdump.tar.gz, uniprot.fasta
@@ -108,7 +108,8 @@ optional arguments:    --dbname               determines location/name of databa
 
 --path is beeing checked for all required database files and missing databases are downloaded.
 
-Examples of usage:
+Examples of usage:\n
+if installed via pip exchange path/to/tax2peptide.py with: python -m tax2peptide
 ```
 tax2peptide.py -p path/to/folder -n path/to/reference_database -t 11111 22222 -o path/my_taxon_specified_database.fasta
 ```
