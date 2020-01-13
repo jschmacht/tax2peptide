@@ -11,7 +11,7 @@ Using uncompressed databases would speed up the program considerably.
 
 ## Getting Started
 
-Tax2Peptide is a python3 command line tool. It can be installed as pypi-package or as conda-package.
+Tax2Peptide is a python3 command line tool. It can be installed as pypi-package.
 
 ### Prerequisites
 
