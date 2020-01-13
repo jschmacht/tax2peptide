@@ -185,17 +185,17 @@ def main():
                  path_to_db, path_to_db.parents[0]/path_to_db.stem])
             if db_b: path_to_db = path_to_db.parents[0] / path_to_db.stem
             if not taxdump_b:
-                logger.warning("File taxdump.tar.gz does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % str(database_folder))
+                logger.warning("File taxdump.tar.gz does not exist does not exist under the path %s"
+                               " and will be downloaded." % str(database_folder))
             if not pdb_b and options.database == 'ncbi':
-                logger.warning("File pdb.accession2taxid.gz does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % str(database_folder))
+                logger.warning("File pdb.accession2taxid.gz does not exist does not exist under the path %s"
+                               " and will be downloaded." % str(database_folder))
             if not prot_gz_b and not prot_b and options.database == 'ncbi':
-                logger.warning("File prot.accession2taxid.gz does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % str(database_folder))
+                logger.warning("File prot.accession2taxid.gz does not exist does not exist under the path %s"
+                               " and will be downloaded." % str(database_folder))
             if options.dbname is None and not db_b and not db_gz_b:
-                logger.warning("Database file %s does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % (db_dict_name[options.database], str(database_folder)))
+                logger.warning("Database file %s does not exist does not exist under the path %s"
+                               " and will be downloaded." % (db_dict_name[options.database], str(database_folder)))
         except FileNotFoundError:
             pass
     # if options.path specified: folder to all databases (without peptide db if options.dbname)
@@ -211,17 +211,17 @@ def main():
             if db_b:
                 path_to_db = path_to_db.parents[0]/path_to_db.stem
             if not taxdump_b:
-                logger.warning("File taxdump.tar.gz does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % str(database_folder))
+                logger.warning("File taxdump.tar.gz does not exist does not exist under the path %s"
+                               " and will be downloaded." % str(database_folder))
             if not pdb_b:
-                logger.warning("File pdb.accession2taxid.gz does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % str(database_folder))
+                logger.warning("File pdb.accession2taxid.gz does not exist does not exist under the path %s"
+                               " and will be downloaded." % str(database_folder))
             if not prot_gz_b and not prot_b:
-                logger.warning("File prot.accession2taxid.gz does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % str(database_folder))
+                logger.warning("File prot.accession2taxid.gz does not exist does not exist under the path %s"
+                               " and will be downloaded." % str(database_folder))
             if options.dbname is None and not db_b and not db_gz_b:
-                logger.warning("Database file %s does not exist does not exist under the specified path %s"
-                               " (option -p) and will be downloaded." % (db_dict_name[options.database], str(database_folder)))
+                logger.warning("Database file %s does not exist does not exist under the path %s"
+                               " and will be downloaded." % (db_dict_name[options.database], str(database_folder)))
         else:
             try:
                 database_folder.mkdir()
@@ -296,17 +296,20 @@ def main():
             dwl_db = Download(url_database_ncbi, database_folder / db_dict_name['ncbi'], md5=md5_hash)
             dwl_db.download()
             logger.info("Databaseversion: %s" % database_version_ncbi)
+            path_to_db = database_folder / db_dict_name['ncbi']
         else:
             if options.database == 'swissprot' or options.database == 'uniprot':
                 database_version_swissprot, hash_swissprot = read_uniprot_metadata(url_uniprot_metadata, db_dict_name['swissprot'],logger)
                 logger.info("Database version swissprot: %s " % database_version_swissprot)
                 dwl_db_swiss = Download(url_database_swissprot, database_folder / db_dict_name['swissprot'], md5=hash_swissprot)
                 dwl_db_swiss.download()
+                path_to_db = database_folder / db_dict_name['swissprot']
             if options.database == 'trembl' or options.database == 'uniprot':
                 database_version_trembl, hash_trembl = read_uniprot_metadata(url_uniprot_metadata, db_dict_name['trembl'],logger)
                 logger.info("Databaseversion trembl: %s." % database_version_trembl)
                 dwl_db_trembl = Download(url_database_trembl, database_folder / db_dict_name['trembl'], md5=hash_trembl)
                 dwl_db_trembl.download()
+                path_to_db = database_folder / db_dict_name['trembl']
             # concetenate  swissprot and trembl to uniprot file
             if options.database == 'uniprot':
                 try:
@@ -317,6 +320,7 @@ def main():
                     # rename trembl to uniprot:
                     Path(database_folder / db_dict_name['trembl']).rename(database_folder / db_dict_name['uniprot'])
                     logger.info("Uniprot database is now ready.")
+                    path_to_db = database_folder / db_dict_name['uniprot']
                 except FileNotFoundError:
                     logger.exception("Creation of uniprot database file out of trembl and swissprot file failed.",
                                      exc_info=True)
