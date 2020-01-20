@@ -11,7 +11,7 @@ Using uncompressed databases would speed up the program considerably.
 
 ## Getting Started
 
-Tax2Peptide is a python3 command line tool. It can be installed as pypi-package or as conda-package.
+Tax2Peptide is a python3 command line tool. It can be installed as pypi-package or as conda-package (https.anaconda.org/jschmacht/tax2peptide).
 
 ### Prerequisites
 
@@ -91,7 +91,7 @@ The database can be downloaded manually or downloaded by tax2peptide with option
 All needed databases will be downloaded to specified path (option --path). If not specified a folder with name databases_DATE will be used as default.
 
 Examples of usage:  
-if installed via pip exchange path/to/tax2peptide.py with: python -m tax2peptide
+If installed via pip exchange path/to/tax2peptide.py with: python -m tax2peptide
 ```
 tax2peptide.py -d uniprot -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with: taxdump.tar.gz, uniprot.fasta
 ```
@@ -109,18 +109,18 @@ optional arguments:    --dbname               determines location/name of databa
 --path is beeing checked for all required database files and missing databases are downloaded.
 
 Examples of usage:  
-if installed via pip exchange path/to/tax2peptide.py with: python -m tax2peptide
+If installed via pip: exchange 'python3 path/to/tax2peptide.py' with 'python -m tax2peptide'
 ```
-tax2peptide.py -p path/to/folder -n path/to/reference_database -t 11111 22222 -o path/my_taxon_specified_database.fasta
-```
-```
-tax2peptide.py -p path/to/folder -n path/ to/ uniprot.fasta -t 11111 22222 -i path/to/input
+python3 path/to/tax2peptide/tax2peptide.py -p path/to/folder -n path/to/reference_database -t 11111 22222 -o path/my_taxon_specified_database.fasta
 ```
 ```
-tax2peptide.py -d ncbi -p path/to/folder -i path/to/input
+python3 path/to/tax2peptide/tax2peptide.py -p path/to/folder -n path/ to/ uniprot.fasta -t 11111 22222 -i path/to/input
 ```
 ```
-tax2peptide.py -d uniprot -p path/to/folder -i path/to/input -o path/to/user_specified_db.fasta
+python3 path/to/tax2peptide/tax2peptide.py -d ncbi -p path/to/folder -i path/to/input
+```
+```
+python3 path/to/tax2peptide/tax2peptide.py -d uniprot -p path/to/folder -i path/to/input -o path/to/user_specified_db.fasta
 ```
 If path is once determined, it must not be specified again, as long as the same folder shell be used.
 

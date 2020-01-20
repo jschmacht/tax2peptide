@@ -77,7 +77,7 @@ class Output:
         """
         :param path_cwd: new path starts in working direction
                 """
-        output_path = path_cwd / ('taxon_specified_db' + '_' + str(date.today())) / 'taxon_database.fasta'
+        output_path = path_cwd / ('taxon_specified_db' + '_' + str(date.today())) / 'taxon_specific_database.fasta'
         if not output_path.parents[0].exists():
             try:
                 output_path.parents[0].mkdir()
@@ -85,11 +85,11 @@ class Output:
                 print("Error creating new direction for saving new generated taxon specified peptide database.")
                 exit(1)
         number = 1
-        if output_path.is_file():
-            output_path = Path.cwd() / ('taxon_specified_db' + '_' + str(date.today())) / (
-                        'taxon_database' + '_' + str(number) + '.fasta')
-            while output_path.is_file():
+        if output_path.is_file() or (output_path.parents[0] / (output_path.stem + '_nr.fasta')).is_file():
+            output_path = Path.cwd() / ('taxon_specified_db' + '_' + str(date.today())) / \
+                          ('taxon_specific_database' + '_' + str(number) + '.fasta')
+            while output_path.is_file() or (output_path.parents[0] / (output_path.stem + '_nr.fasta')).is_file():
                 number += 1
-                output_path = Path.cwd() / ('taxon_specified_db' + '_' + str(date.today())) / (
-                            'taxon_database' + '_' + str(number) + '.fasta')
+                output_path = Path.cwd() / ('taxon_specified_db' + '_' + str(date.today())) / \
+                              ('taxon_specific_database' + '_' + str(number) + '.fasta')
         return output_path
