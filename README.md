@@ -1,6 +1,6 @@
-# tax2peptide
+# tax2proteome
 
-tax2peptide creates based on given taxon IDs and a reference database a taxon specific database in fasta format. This taxon specific database contains according to the selected options all fasta entries of:
+Tax2proteome creates based on given taxon IDs and a reference database a taxon specific database in fasta format. This taxon specific database contains according to the selected options all fasta entries of:
 * given taxon IDs and their descendant taxon IDs in the phylogenetic tree
 * given taxon IDs (option --no_descendants)
 * given taxon IDs adapted to specified level up in the phylogenetic tree and their descendant taxon IDs (option --level)
@@ -11,7 +11,7 @@ Using uncompressed databases would speed up the program considerably.
 
 ## Getting Started
 
-Tax2Peptide is a python3 command line tool. It can be installed as pypi-package or as conda-package (https.anaconda.org/jschmacht/tax2peptide).
+Tax2proteome is a python3 command line tool. It can be installed as pypi-package or as conda-package (https.anaconda.org/jschmacht/tax2proteome).
 
 ### Prerequisites
 
@@ -24,22 +24,22 @@ pip install tqdm biopython wget
 
 ### Installing via pip
 ```
-pip install tax2peptide
+pip install tax2proteome
 ```
 or
 ```
-pip install -i https://pypi.org/simple/tax2peptide-jschmacht 
+pip install -i https://pypi.org/simple/tax2proteome-jschmacht 
 ```
 
 ## Deployment
 
-Tax2Peptide is a command line tool and starts with: 
+tax2proteome is a command line tool and starts with: 
 ```
-python3 path/to/tax2peptide/tax2peptide.py [options]
+python3 path/to/tax2proteome/tax2proteome.py [options]
 ```
 or if installed via pip
 ```
-python -m tax2peptide [options]
+python -m tax2proteome [options]
 ```
 
 ### Options:
@@ -74,7 +74,7 @@ All database files should be downloaded the same day and stored in the same fold
 
 #### Databases
 All databases should be downloaded at the same date as the peptide database to ensure successful accession matching.
-The database can be downloaded manually or downloaded by tax2peptide with option --database {ncbi, uniprot, trembl, swissprot}
+The database can be downloaded manually or downloaded by tax2proteome with option --database {ncbi, uniprot, trembl, swissprot}
 
 
 | database name       | description                                                         |source | adress
@@ -87,21 +87,21 @@ The database can be downloaded manually or downloaded by tax2peptide with option
 | pdb.accession2taxid |contain links between accession IDs and taxonomic lineage (taxon IDs)|NCBI   | ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/pdb.accession2taxid.gz                                            |
 | taxdump             |tar-gz-compressed taxdump file containing information about the phylogenetic lineage and links between taxIDs and scientific names etc.|NCBI   |ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz            |
 
-#### Usage of tax2peptide with database download: 
+#### Usage of tax2proteome with database download: 
 All needed databases will be downloaded to specified path (option --path). If not specified a folder with name databases_DATE will be used as default.
 
 Examples of usage:  
-If installed via pip exchange path/to/tax2peptide.py with: python -m tax2peptide
+If installed via pip exchange path/to/tax2proteome.py with: python -m tax2proteome
 ```
-tax2peptide.py -d uniprot -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with: taxdump.tar.gz, uniprot.fasta
-```
-```
-tax2peptide.py -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with: taxdump.tar.gz, uniprot.fasta
+tax2proteome.py -d uniprot -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with: taxdump.tar.gz, uniprot.fasta
 ```
 ```
-tax2peptide.py -d ncbi -p path/to/my_new_databases -i path/to/input/taxon_ID_file  -> new Folder/used Folder my_new_databases with: protaccession2tax.gz, pdbaccession2tax.gz, taxdump.tar.gz, nr.gz
+tax2proteome.py -i path/to/input/taxon_ID_file  -> new Folder databases_DATE with: taxdump.tar.gz, uniprot.fasta
 ```
-#### Usage of tax2peptide if all database files are already downloaded:
+```
+tax2proteome.py -d ncbi -p path/to/my_new_databases -i path/to/input/taxon_ID_file  -> new Folder/used Folder my_new_databases with: protaccession2tax.gz, pdbaccession2tax.gz, taxdump.tar.gz, nr.gz
+```
+#### Usage of tax2proteome if all database files are already downloaded:
 positional arguments:  --path                 determines folder with all needed databases
 positional arguments:  --taxon AND/OR --input at least one taxon ID or taxon ID input file must be provided
 optional arguments:    --dbname               determines location/name of database (if reference database is not in --path or have different name (see table for standard names)
@@ -109,18 +109,18 @@ optional arguments:    --dbname               determines location/name of databa
 --path is beeing checked for all required database files and missing databases are downloaded.
 
 Examples of usage:  
-If installed via pip: exchange 'python3 path/to/tax2peptide.py' with 'python -m tax2peptide'
+If installed via pip: exchange 'python3 path/to/tax2proteome.py' with 'python -m tax2proteome'
 ```
-python3 path/to/tax2peptide/tax2peptide.py -p path/to/folder -n path/to/reference_database -t 11111 22222 -o path/my_taxon_specified_database.fasta
-```
-```
-python3 path/to/tax2peptide/tax2peptide.py -p path/to/folder -n path/ to/ uniprot.fasta -t 11111 22222 -i path/to/input
+python3 path/to/tax2proteome/tax2proteome.py -p path/to/folder -n path/to/reference_database -t 11111 22222 -o path/my_taxon_specified_database.fasta
 ```
 ```
-python3 path/to/tax2peptide/tax2peptide.py -d ncbi -p path/to/folder -i path/to/input
+python3 path/to/tax2proteome/tax2proteome.py -p path/to/folder -n path/ to/ uniprot.fasta -t 11111 22222 -i path/to/input
 ```
 ```
-python3 path/to/tax2peptide/tax2peptide.py -d uniprot -p path/to/folder -i path/to/input -o path/to/user_specified_db.fasta
+python3 path/to/tax2proteome/tax2proteome.py -d ncbi -p path/to/folder -i path/to/input
+```
+```
+python3 path/to/tax2proteome/tax2proteome.py -d uniprot -p path/to/folder -i path/to/input -o path/to/user_specified_db.fasta
 ```
 If path is once determined, it must not be specified again, as long as the same folder shell be used.
 
@@ -129,7 +129,7 @@ If path is once determined, it must not be specified again, as long as the same 
 
 * **Juliane Schmachtenberg** 
 
-[project_on_github](https://github.com/jschmacht/tax2peptide)
+[project_on_github](https://github.com/jschmacht/tax2proteome)
 
 ## License
 
