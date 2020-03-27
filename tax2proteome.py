@@ -179,7 +179,7 @@ def main():
     else:
         try:
             path_to_main = Path(__file__, '..').resolve()
-            with open(str(path_to_main) + "/tax2peptide.config", 'r') as config:
+            with open(str(path_to_main) + "/tax2proteome.config", 'r') as config:
                 database_folder = Path(config.readline().strip())
                 path_to_db = database_folder / db_dict_name[options.database]
         except FileNotFoundError:
@@ -241,7 +241,7 @@ def main():
             logger.warning("Database file %s does not exist does not exist under the path %s and will be downloaded."
                            % (db_dict_name[options.database], str(database_folder)))
 
-    # download taxdump file (best at thhe same day)
+    # download taxdump file (best at the same day)
     if not taxdump_b:
         taxdump_md5 = read_ncbi_hash(url_taxdump_md5, logger)
         dwl_taxdb = Download(url_taxdump, database_folder / url_taxdump.split('/')[-1], taxdump_md5)
@@ -307,7 +307,7 @@ def main():
     # create config file
     try:
         path_to_main = Path(__file__, '..').resolve()
-        with open(str(path_to_main / "tax2peptide.config"), 'w') as config:
+        with open(str(path_to_main / "tax2proteome.config"), 'w') as config:
             config.write(str(database_folder) + '\n')
     except OSError:
         logger.debug('Can not create config file')
